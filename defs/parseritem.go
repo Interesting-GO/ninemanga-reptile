@@ -1,0 +1,28 @@
+/**
+ * @Author: DollarKiller
+ * @Description:
+ * @Github: https://github.com/dollarkillerx
+ * @Date: Create in 15:47 2019-09-24
+ */
+package defs
+
+type ParserHoItem struct {
+	SqlId int
+	DowUrl []DowItem
+}
+
+type DowItem struct {
+	SqlId int
+	Url string
+	Num int
+}
+
+
+// item
+
+type CartoonItemImg []*CartoonItemImgItem
+
+type CartoonItemImgItem struct {
+	Id  int    `json:"id"`
+	Img string `json:"img"`
+}
