@@ -40,6 +40,8 @@ func init() {
 		cacher2 := xorm.NewLRUCacher2(xorm.NewMemoryStore(), time.Hour*4, 1024)
 		MysqlEngine.SetDefaultCacher(cacher2)
 	}
+	MysqlEngine.SetMaxIdleConns(50)
+	MysqlEngine.SetMaxOpenConns(100)
 
 	// 数据库表映射
 	mapping()

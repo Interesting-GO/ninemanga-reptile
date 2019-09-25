@@ -6,6 +6,8 @@
  */
 package main
 
-func main() {
+import "ninemanga-reptile/fetcher"
 
+func main() {
+	fetcher.ReptileEngine()
 }

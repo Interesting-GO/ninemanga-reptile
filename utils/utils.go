@@ -7,6 +7,7 @@
 package utils
 
 import (
+	"github.com/dollarkillerx/easyutils"
 	"github.com/dollarkillerx/easyutils/clog"
 	"github.com/dollarkillerx/easyutils/httplib"
 	"io/ioutil"
@@ -17,6 +18,12 @@ import (
 )
 
 func Dow(url string) []byte {
+
+	// 每一次休息一下 随机100~500  毫秒
+	random := easyutils.Random(100, 500)
+	duration := time.Duration(random)
+	time.Sleep(duration * time.Millisecond)
+
 	// 下载网页
 	for i := 0; i < 100; i++ {
 		response, e := httplib.ProxyDow(url, "127.0.0.1:8001")

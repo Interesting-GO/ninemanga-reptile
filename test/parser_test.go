@@ -17,6 +17,7 @@ import (
 	"ninemanga-reptile/datamodels"
 	"ninemanga-reptile/defs"
 	"ninemanga-reptile/utils"
+	"strconv"
 	"strings"
 	"testing"
 )
@@ -174,55 +175,49 @@ func TestDow(t *testing.T) {
 	url1 := strings.Replace(item.Url, "$x$", "1", -1)
 
 	log.Println(url1)
-	//dow := utils.DowChrom(url1)
-	//
-	//err := ioutil.WriteFile("hh.html", dow, 00666)
-	//if err != nil {
-	//	panic(err)
-	//}
-	utils.ChromJT(url1)
+	chrome := utils.StartChrome(url1)
 
-	//if dow == nil {
-	//	return
-	//}
-	//
-	//document, e := goquery.NewDocumentFromReader(bytes.NewReader(dow))
-	//if e != nil {
-	//	panic(e.Error())
-	//}
-	//
-	//var page int
-	//document.Find("select#page").Find("option").Each(func(i int, selection *goquery.Selection) {
-	//	text := selection.Text()
-	//	page = utils.GetPage(text)
-	//	return
-	//})
-	//
-	//data := datamodels.PreCartoonItem{
-	//	Read:easyutils.Random(300,3000),
-	//	CreateTime:easyutils.TimeGetNowTime(),
-	//	Language:"fr",
-	//}
-	//
-	//data = data
-	//
-	//for i:=1;i<=page;i++ {
-	//	url := strings.Replace(item.Url,"$x$",strconv.Itoa(i),-1)
-	//
-	//	i2 := utils.Dow(url)
-	//
-	//	reader, e := goquery.NewDocumentFromReader(bytes.NewReader(i2))
-	//	if e != nil {
-	//		panic(e)
-	//	}
-	//
-	//	reader.Find("center").Find("img").Each(func(i int, selection *goquery.Selection) {
-	//		val, exists := selection.Attr("src")
-	//		if exists {
-	//			log.Println(val)
-	//		}
-	//	})
-	//
-	//}
+	if chrome == "" {
+		return
+	}
+
+	document, e := goquery.NewDocumentFromReader(strings.NewReader(chrome))
+	if e != nil {
+		panic(e.Error())
+	}
+
+	var page int
+	document.Find("select#page").Find("option").Each(func(i int, selection *goquery.Selection) {
+		text := selection.Text()
+		page = utils.GetPage(text)
+		return
+	})
+
+	data := datamodels.PreCartoonItem{
+		Read:easyutils.Random(300,3000),
+		CreateTime:easyutils.TimeGetNowTime(),
+		Language:"fr",
+	}
+
+	data = data
+
+	for i:=1;i<=page;i++ {
+		url := strings.Replace(item.Url,"$x$",strconv.Itoa(i),-1)
+
+		i2 := utils.StartChrome(url)
+
+		reader, e := goquery.NewDocumentFromReader(strings.NewReader(i2))
+		if e != nil {
+			panic(e)
+		}
+
+		reader.Find("center").Find("img").Each(func(i int, selection *goquery.Selection) {
+			val, exists := selection.Attr("src")
+			if exists {
+				log.Println(val)
+			}
+		})
+
+	}
 
 }

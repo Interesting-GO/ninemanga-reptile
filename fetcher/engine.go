@@ -23,10 +23,13 @@ type Reptile struct {
 	chin1 chan interface{}   // item 解析
 	chin2 chan interface{}   // 二级 内容页面      // 用于解析动漫页面  获取 动漫 单个动漫的list 和动漫的详情 然后入库
 	chin3 chan interface{}   // 三级 用于下载动漫   // 下载动漫然后 入库
+	end chan interface{}
 
 	ParserUrl ParserUrl
 	ParserUrlHome ParserUrlItem
 	ParserItem ParserUrlItem
+	ParserItemIn ParserUrlItem
+	ParserImg ParserUrlItem
 }
 
 // 中央控制
@@ -34,18 +37,27 @@ func ReptileEngine() {
 	url := reptile.GenerateUrl{}    // url 生成器
 	urlhome := reptile.ParserHome{} // 解析二级url
 	in := reptile.ParserHomeIn{}    // 三级解析item
-	// 四级下载
+	item := reptile.DowItem{}       // 四级下载 chrome解析流量
+	img := reptile.DowImg{}         // 下载图片
 
 	i := Reptile{
 		churl:make(chan interface{},1000),
 		chin1:make(chan interface{},1000),
 		chin2:make(chan interface{},1000),
 		chin3:make(chan interface{},1000),
+		end:make(chan interface{}),
 		ParserUrl:&url,
 		ParserUrlHome:&urlhome,
 		ParserItem:&in,
-
+		ParserItemIn:&item,
+		ParserImg:&img,
 	}
 
+	go i.ParserUrl.ParserUrl(i.churl)
+	go i.ParserUrlHome.ParserUrlItem(i.churl,i.chin1)
+	go i.ParserItem.ParserUrlItem(i.chin1,i.chin2)
+	go i.ParserItemIn.ParserUrlItem(i.chin2,i.chin3)
+	go i.ParserImg.ParserUrlItem(i.chin3,i.end)
 
+	<-i.end
 }
