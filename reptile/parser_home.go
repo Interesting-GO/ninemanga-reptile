@@ -9,8 +9,9 @@ package reptile
 import (
 	"bytes"
 	"github.com/PuerkitoBio/goquery"
+	"github.com/dollarkillerx/easyutils/clog"
+	"log"
 	"ninemanga-reptile/utils"
-	"sync"
 )
 
 // parser home
@@ -18,20 +19,16 @@ type ParserHome struct {
 }
 
 func (p *ParserHome) ParserUrlItem(ch1 chan interface{}, ch2 chan interface{}) {
+	numch := make(chan int, 10)
 cc:
 	for {
 		select {
 		case ur, ok := <-ch1:
 			if ok {
 				// 开启多协程
-				numch := make(chan int, 5)
-				gr := sync.WaitGroup{}
-				gr.Add(1)
 				numch <- 1
-
 				go func(ur interface{}) {
 					defer func() {
-						gr.Done()
 						<-numch
 					}()
 					url := ur.(string)
@@ -39,9 +36,9 @@ cc:
 
 				}(ur)
 
-				gr.Wait()
 
 			} else {
+				clog.Println("第二阶段完毕")
 				close(ch2)
 				break cc
 			}
@@ -54,6 +51,9 @@ func (p *ParserHome) logic(url string, ch chan interface{}) {
 
 	// 下载网页
 	homehtml = utils.Dow(url)
+	log.Println("21")
+
+
 
 	if homehtml == nil {
 		return
@@ -68,6 +68,7 @@ func (p *ParserHome) logic(url string, ch chan interface{}) {
 		selection.Find("a.bookname").Each(func(i int, selection *goquery.Selection) {
 			val, exists := selection.Attr("href")
 			if exists {
+				log.Println(val)
 				ch <- val
 			}
 		})

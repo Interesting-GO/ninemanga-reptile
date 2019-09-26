@@ -6,7 +6,10 @@
  */
 package reptile
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/dollarkillerx/easyutils/clog"
+)
 
 type GenerateUrl struct {
 }
@@ -14,10 +17,11 @@ type GenerateUrl struct {
 // url 生成器
 func (p *GenerateUrl) ParserUrl(url chan interface{}) {
 	baseUrl := "http://fr.ninemanga.com/category/index_%v.html"
-	for i := 1; i <= 110; i++ {
+	for i := 2; i <= 110; i++ {
 		spr := fmt.Sprintf(baseUrl, i)
 		url <- spr
 	}
 	// 生成完毕关掉chan
+	clog.Println("第一阶段完毕")
 	close(url)
 }

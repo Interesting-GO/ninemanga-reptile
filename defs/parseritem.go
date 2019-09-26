@@ -17,6 +17,12 @@ type DowItem struct {
 	Num int
 }
 
+type DowImgItem struct {
+	SqlId int
+	Context CartoonItemImg
+	Num int
+	Url string
+}
 
 // item
 

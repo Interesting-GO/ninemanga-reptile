@@ -10,13 +10,14 @@ import (
 	"bytes"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/dollarkillerx/easyutils"
+	"github.com/dollarkillerx/easyutils/clog"
+	"io/ioutil"
 	"math/rand"
 	"ninemanga-reptile/datamodels"
 	"ninemanga-reptile/datasources/mysql_conn"
 	"ninemanga-reptile/defs"
 	"ninemanga-reptile/utils"
 	"strings"
-	"sync"
 )
 
 type ParserHomeIn struct {
@@ -24,20 +25,18 @@ type ParserHomeIn struct {
 }
 
 func (p *ParserHomeIn) ParserUrlItem(ch1 chan interface{},ch2 chan interface{}) {
-	cc:
+	numch := make(chan int, 10)
+
+cc:
 	for {
 		select {
 		case ur,ok := <- ch1 :
 			if ok {
 				// 开启多协程
-				numch := make(chan int, 5)
-				gr := sync.WaitGroup{}
-				gr.Add(1)
 				numch <- 1
 
 				go func(ur interface{}) {
 					defer func() {
-						gr.Done()
 						<-numch
 					}()
 					url := ur.(string)
@@ -45,9 +44,9 @@ func (p *ParserHomeIn) ParserUrlItem(ch1 chan interface{},ch2 chan interface{}) 
 
 				}(ur)
 
-				gr.Wait()
 
 			}else {
+				clog.Println("第三阶段完毕")
 				close(ch2)
 				break cc
 			}
@@ -60,7 +59,9 @@ func (p *ParserHomeIn) logic(url string,ch chan interface{}) {
 	var homehtml []byte
 
 	// 下载网页
-	homehtml = utils.Dow(url)
+	//homehtml = utils.Dow(url)
+	chrome := utils.StartChrome(url)
+	homehtml = []byte(chrome)
 	if homehtml == nil {
 		panic("--")
 	}
@@ -90,7 +91,7 @@ func (p *ParserHomeIn) logic(url string,ch chan interface{}) {
 		// 名称
 		if strings.Index(text,"Nom du livre:") != -1 {
 			s := selection.Find("span").Text()
-			data.Name = s
+			data.Name = strings.TrimSpace(s)
 		}
 
 		// 分类
@@ -122,7 +123,7 @@ func (p *ParserHomeIn) logic(url string,ch chan interface{}) {
 				ic += 1
 			})
 
-			data.Author = tex
+			data.Author = strings.TrimSpace(tex)
 		}
 
 		// 年代
@@ -172,6 +173,11 @@ func (p *ParserHomeIn) logic(url string,ch chan interface{}) {
 	})
 
 	// 数据入库
+	//data.Language = url
+	if data.Name == "" {
+		ioutil.WriteFile("err.html",homehtml,00666)
+		return
+	}
 	_, e = mysql_conn.MysqlEngine.InsertOne(&data)
 	if e != nil {
 		panic(e)
@@ -179,8 +185,9 @@ func (p *ParserHomeIn) logic(url string,ch chan interface{}) {
 
 	// 正常入库查询 数据库id
 	dat := datamodels.PreCartoon{}
-	e = mysql_conn.MysqlEngine.Where("name =? ", data.Name).Find(&dat)
+	_, e = mysql_conn.MysqlEngine.Where("name = ? ", data.Name).Get(&dat)
 	if e != nil {
+		clog.Println(dat)
 		panic(e)
 	}
 
