@@ -56,9 +56,7 @@ func (p *ParserHome) logic(url string, ch chan interface{}) {
 
 	// 下载网页
 	homehtml = utils.Dow(url)
-	log.Println("21")
-
-
+	clog.Println(url + "下载完毕")
 
 	if homehtml == nil {
 		return

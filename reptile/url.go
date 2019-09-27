@@ -9,7 +9,6 @@ package reptile
 import (
 	"fmt"
 	"github.com/dollarkillerx/easyutils/clog"
-	"ninemanga-reptile/config"
 )
 
 type GenerateUrl struct {
@@ -17,7 +16,7 @@ type GenerateUrl struct {
 
 // url 生成器
 func (p *GenerateUrl) ParserUrl(url chan interface{}) {
-	baseUrl := config.MyConfig.App.BaseUrl
+	baseUrl := "http://de.ninemanga.com/category/index_%v.html"
 	for i := 2; i <= 24; i++ {
 		spr := fmt.Sprintf(baseUrl, i)
 		url <- spr
