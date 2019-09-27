@@ -12,6 +12,7 @@ import (
 	"github.com/dollarkillerx/easyutils/clog"
 	"log"
 	"ninemanga-reptile/utils"
+	"sync"
 )
 
 // parser home
@@ -20,6 +21,7 @@ type ParserHome struct {
 
 func (p *ParserHome) ParserUrlItem(ch1 chan interface{}, ch2 chan interface{}) {
 	numch := make(chan int, 10)
+	sy := sync.WaitGroup{}
 cc:
 	for {
 		select {
@@ -27,9 +29,11 @@ cc:
 			if ok {
 				// 开启多协程
 				numch <- 1
+				sy.Add(1)
 				go func(ur interface{}) {
 					defer func() {
 						<-numch
+						sy.Done()
 					}()
 					url := ur.(string)
 					p.logic(url, ch2)
@@ -38,6 +42,7 @@ cc:
 
 
 			} else {
+				sy.Wait()
 				clog.Println("第二阶段完毕")
 				close(ch2)
 				break cc

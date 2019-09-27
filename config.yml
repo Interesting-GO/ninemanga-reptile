@@ -4,8 +4,8 @@
 app:
   host: ":8084"
   debug: true
-  baseurl: "http://127.0.0.1:8084"
-  language: "es"
+  baseurl: "http://fr.ninemanga.com/category/index_%v.html"
+  language: "fr"
   s3url: "https://pre-europe.s3.eu-central-1.amazonaws.com/es-comic/img-45/"
 
 mysql:

@@ -10,10 +10,12 @@ import (
 	"encoding/json"
 	"github.com/dollarkillerx/easyutils"
 	"github.com/dollarkillerx/easyutils/clog"
+	"ninemanga-reptile/config"
 	"ninemanga-reptile/datamodels"
 	"ninemanga-reptile/datasources/mysql_conn"
 	"ninemanga-reptile/defs"
 	"strconv"
+	"sync"
 	"time"
 )
 
@@ -22,6 +24,7 @@ type DowImg struct {
 
 func (d *DowImg) End(ch1 chan interface{}, end chan int) {
 	numch := make(chan int, 20)
+	sy := sync.WaitGroup{}
 
 cc:
 	for {
@@ -31,15 +34,18 @@ cc:
 
 				// 开启多协程
 				numch <- 1
+				sy.Add(1)
 
 				go func(ur interface{}) {
 					defer func() {
 						<-numch
+						sy.Done()
 					}()
 					d.logic(ur)
 				}(val)
 
 			} else {
+				sy.Wait()
 				time.Sleep(200 * time.Second)
 				clog.Println("第五阶段完毕")
 				end <- 1
@@ -56,7 +62,7 @@ func (d *DowImg) logic(ur interface{}) {
 		Read:       easyutils.Random(300, 6000),
 		CreateTime: easyutils.TimeGetNowTime(),
 		CartoonId:  item.SqlId,
-		Language:   "fr",
+		Language:   config.MyConfig.App.Language,
 		Collection: item.Num,
 	}
 

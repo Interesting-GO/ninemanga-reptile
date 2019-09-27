@@ -13,6 +13,7 @@ import (
 	"ninemanga-reptile/utils"
 	"strconv"
 	"strings"
+	"sync"
 )
 
 type DowItem struct {
@@ -20,6 +21,7 @@ type DowItem struct {
 
 func (d *DowItem) ParserUrlItem(ch1 chan interface{},ch2 chan interface{}) {
 	numch := make(chan int, 10)
+	sy := sync.WaitGroup{}
 
 cc:
 	for {
@@ -29,15 +31,18 @@ cc:
 
 				// 开启多协程
 				numch <- 1
+				sy.Add(1)
 
 				go func(ur interface{}) {
 					defer func() {
 						<-numch
+						sy.Done()
 					}()
 					d.logic(ur,ch2)
 				}(val)
 
 			} else {
+				sy.Wait()
 				clog.Println("第四阶段完毕")
 				close(ch2)
 				break cc
