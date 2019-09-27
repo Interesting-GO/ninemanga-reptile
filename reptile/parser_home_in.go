@@ -95,13 +95,13 @@ func (p *ParserHomeIn) logic(url string,ch chan interface{}) {
 		//clog.Println(text)
 
 		// 名称
-		if strings.Index(text,"Book Name:") != -1 {
+		if strings.Index(text,"Nome del libro:") != -1 {
 			s := selection.Find("span").Text()
 			data.Name = strings.TrimSpace(s)
 		}
 
 		// 分类
-		if strings.Index(text,"Genre (s):") != -1 {
+		if strings.Index(text,"Genere(s):") != -1 {
 			tex := ""
 			ic := 0
 			selection.Find("a").Each(func(i int, selection *goquery.Selection) {
@@ -117,7 +117,7 @@ func (p *ParserHomeIn) logic(url string,ch chan interface{}) {
 		}
 
 		// 作者
-		if strings.Index(text,"Autor (en):") != -1 {
+		if strings.Index(text,"Author(s):") != -1 {
 			tex := ""
 			ic := 0
 			selection.Find("a").Each(func(i int, selection *goquery.Selection) {
@@ -133,7 +133,7 @@ func (p *ParserHomeIn) logic(url string,ch chan interface{}) {
 		}
 
 		// 年代
-		if strings.Index(text,"Jahr") != -1 {
+		if strings.Index(text,"Anno") != -1 {
 			tex := ""
 			ic := 0
 			selection.Find("a").Each(func(i int, selection *goquery.Selection) {
@@ -151,7 +151,7 @@ func (p *ParserHomeIn) logic(url string,ch chan interface{}) {
 
 	// 描述
 	text := document.Find("p[itemprop='description']").Text()
-	text = strings.Replace(text, "\nZusammenfassung:\n", "", -1)
+	text = strings.Replace(text, "\nSommario:\n", "", -1)
 	data.Describe = text
 
 	val, exists := document.Find("img[itemprop='image']").Attr("src")
