@@ -148,6 +148,11 @@ func (p *ParserHomeIn) logic(url string,ch chan interface{}) {
 	text = strings.Replace(text, "\nRésumé:\n", "", -1)
 	data.Describe = text
 
+	val, exists := document.Find("img[itemprop='image']").Attr("src")
+	if exists {
+		data.Img = val
+	}
+
 	//log.Println(data)
 
 	// 获取需要下载的list
@@ -193,9 +198,13 @@ func (p *ParserHomeIn) logic(url string,ch chan interface{}) {
 
 	dowdata.SqlId = dat.Id
 
-	for _,k := range dowdata.DowUrl {
-		k.SqlId = dowdata.SqlId
-		// 写入
-		ch <- k
+	for i,k := range dowdata.DowUrl {
+		if i < easyutils.Random(15,30) {
+			k.SqlId = dowdata.SqlId
+			// 写入
+			ch <- k
+		}else {
+			return
+		}
 	}
 }

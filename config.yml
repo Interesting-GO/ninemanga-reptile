@@ -10,7 +10,7 @@ app:
 
 mysql:
 #  dsn: "root:mlbj8888@(127.0.0.1:3306)/pre_cartoon?charset=utf8"
-  dsn: "root:123456@(127.0.0.1:3306)/pre_cartoon_fr?charset=utf8"
+  dsn: "root:123456@(127.0.0.1:3306)/pre_cartoon_fro?charset=utf8"
 
 redis:
   maxidle: 50 # 连接池中最大空闲连接数量

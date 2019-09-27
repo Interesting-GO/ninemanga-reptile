@@ -100,6 +100,8 @@ func (d *DowItem) logic (dat1 interface{},ch2 chan interface{}) {
 		})
 	}
 
+
+
 	data2.Url = data1.Url
 	data2.Context = data3
 

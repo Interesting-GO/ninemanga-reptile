@@ -139,12 +139,17 @@ func TestParserPHome(t *testing.T) {
 		}
 	})
 
+	val, exists := document.Find("img[itemprop='image']").Attr("src")
+	if exists {
+		data.Img = val
+	}
+
 	// 描述
 	text := document.Find("p[itemprop='description']").Text()
 	text = strings.Replace(text, "\nRésumé:\n", "", -1)
 	data.Describe = text
 
-	//log.Println(data)
+	log.Println(data)
 
 	// 获取需要下载的list
 	document.Find("ul.sub_vol_ul").Find("li").Each(func(i int, selection *goquery.Selection) {

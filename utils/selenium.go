@@ -13,6 +13,7 @@ import (
 	"github.com/tebeka/selenium"
 	"github.com/tebeka/selenium/chrome"
 	"log"
+	"strings"
 	"sync"
 	"time"
 )
@@ -136,6 +137,7 @@ func StartChrome(url string) string {
 			if err == nil {
 				// 重试
 				s, err := Ch0.PageSource()
+				s = strings.TrimSpace(s)
 				if s == "" {
 					time.Sleep(time.Minute * 3)
 					continue
