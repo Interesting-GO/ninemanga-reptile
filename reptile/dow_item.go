@@ -19,7 +19,7 @@ import (
 type DowItem struct {
 }
 
-func (d *DowItem) ParserUrlItem(ch1 chan interface{},ch2 chan interface{}) {
+func (d *DowItem) ParserUrlItem(ch1 chan interface{}, ch2 chan interface{}) {
 	numch := make(chan int, 10)
 	sy := sync.WaitGroup{}
 
@@ -38,7 +38,7 @@ cc:
 						<-numch
 						sy.Done()
 					}()
-					d.logic(ur,ch2)
+					d.logic(ur, ch2)
 				}(val)
 
 			} else {
@@ -51,7 +51,7 @@ cc:
 	}
 }
 
-func (d *DowItem) logic (dat1 interface{},ch2 chan interface{}) {
+func (d *DowItem) logic(dat1 interface{}, ch2 chan interface{}) {
 	data1 := dat1.(defs.DowItem)
 
 	url1 := strings.Replace(data1.Url, "$x$", "1", -1)
@@ -77,14 +77,14 @@ func (d *DowItem) logic (dat1 interface{},ch2 chan interface{}) {
 
 	// #cx
 	data2 := defs.DowImgItem{
-		SqlId:data1.SqlId,
-		Num:data1.Num,
+		SqlId: data1.SqlId,
+		Num:   data1.Num,
 	}
 
 	data3 := defs.CartoonItemImg{}
 
-	for i:=1;i<=page;i++ {
-		url := strings.Replace(data1.Url,"$x$",strconv.Itoa(i),-1)
+	for i := 1; i <= page; i++ {
+		url := strings.Replace(data1.Url, "$x$", strconv.Itoa(i), -1)
 
 		i2 := utils.StartChrome(url)
 
@@ -97,15 +97,13 @@ func (d *DowItem) logic (dat1 interface{},ch2 chan interface{}) {
 			val, exists := selection.Attr("src")
 			if exists {
 				dataitem := defs.CartoonItemImgItem{
-					Id:i,
-					Img:val,
+					Id:  i,
+					Img: val,
 				}
-				data3 = append(data3,&dataitem)
+				data3 = append(data3, &dataitem)
 			}
 		})
 	}
-
-
 
 	data2.Url = data1.Url
 	data2.Context = data3

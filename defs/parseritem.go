@@ -7,21 +7,21 @@
 package defs
 
 type ParserHoItem struct {
-	SqlId int
+	SqlId  int
 	DowUrl []DowItem
 }
 
 type DowItem struct {
 	SqlId int
-	Url string
-	Num int
+	Url   string
+	Num   int
 }
 
 type DowImgItem struct {
-	SqlId int
+	SqlId   int
 	Context CartoonItemImg
-	Num int
-	Url string
+	Num     int
+	Url     string
 }
 
 // item

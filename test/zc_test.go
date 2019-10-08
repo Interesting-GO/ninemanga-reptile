@@ -30,7 +30,6 @@ func TestTwo(t *testing.T) {
 	utils.GetPage("10/23")
 }
 
-
 func TestSSc(t *testing.T) {
 	url := "http://fr.ninemanga.com/chapter/The%20Prince%27s%20Private%20Child/16548-10-1.html"
 	index := strings.LastIndex(url, "-")

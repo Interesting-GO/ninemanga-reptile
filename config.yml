@@ -5,12 +5,12 @@ app:
   host: ":8084"
   debug: true
   baseurl: "http://fr.ninemanga.com/category/index_%v.html"
-  language: "bs"
+  language: "en"
   s3url: "https://pre-europe.s3.eu-central-1.amazonaws.com/es-comic/img-45/"
 
 mysql:
 #  dsn: "root:mlbj8888@(127.0.0.1:3306)/pre_cartoon?charset=utf8"
-  dsn: "root:123456@(127.0.0.1:3306)/pre_cartoon_fro?charset=utf8"
+  dsn: "root:123456@(127.0.0.1:3306)/pre_cartoon_fr?charset=utf8"
 
 redis:
   maxidle: 50 # 连接池中最大空闲连接数量

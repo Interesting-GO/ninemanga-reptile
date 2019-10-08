@@ -57,4 +57,3 @@ func init() {
 		log.Println(MyConfig)
 	}
 }
-

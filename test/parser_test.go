@@ -199,15 +199,15 @@ func TestDow(t *testing.T) {
 	})
 
 	data := datamodels.PreCartoonItem{
-		Read:easyutils.Random(300,3000),
-		CreateTime:easyutils.TimeGetNowTime(),
-		Language:"fr",
+		Read:       easyutils.Random(300, 3000),
+		CreateTime: easyutils.TimeGetNowTime(),
+		Language:   "fr",
 	}
 
 	data = data
 
-	for i:=1;i<=page;i++ {
-		url := strings.Replace(item.Url,"$x$",strconv.Itoa(i),-1)
+	for i := 1; i <= page; i++ {
+		url := strings.Replace(item.Url, "$x$", strconv.Itoa(i), -1)
 
 		i2 := utils.StartChrome(url)
 

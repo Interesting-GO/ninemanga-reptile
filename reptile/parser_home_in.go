@@ -23,17 +23,16 @@ import (
 )
 
 type ParserHomeIn struct {
-
 }
 
-func (p *ParserHomeIn) ParserUrlItem(ch1 chan interface{},ch2 chan interface{}) {
+func (p *ParserHomeIn) ParserUrlItem(ch1 chan interface{}, ch2 chan interface{}) {
 	numch := make(chan int, 10)
 	sy := sync.WaitGroup{}
 
 cc:
 	for {
 		select {
-		case ur,ok := <- ch1 :
+		case ur, ok := <-ch1:
 			if ok {
 				// 开启多协程
 				numch <- 1
@@ -49,8 +48,7 @@ cc:
 
 				}(ur)
 
-
-			}else {
+			} else {
 				sy.Wait()
 				clog.Println("第三阶段完毕")
 				close(ch2)
@@ -60,7 +58,7 @@ cc:
 	}
 }
 
-func (p *ParserHomeIn) logic(url string,ch chan interface{}) {
+func (p *ParserHomeIn) logic(url string, ch chan interface{}) {
 	//url := "http://fr.ninemanga.com/manga/The+Prince%27s+Private+Child.html"
 	var homehtml []byte
 
@@ -72,7 +70,6 @@ func (p *ParserHomeIn) logic(url string,ch chan interface{}) {
 		panic("--")
 	}
 
-
 	document, e := goquery.NewDocumentFromReader(bytes.NewReader(homehtml))
 	if e != nil {
 		panic(e.Error())
@@ -82,10 +79,10 @@ func (p *ParserHomeIn) logic(url string,ch chan interface{}) {
 	mast := document.Find("ul.message")
 
 	data := datamodels.PreCartoon{
-		Language:config.MyConfig.App.Language,
-		State:rand.Intn(2),
-		Read:easyutils.Random(300,6000),
-		CreateTime:easyutils.TimeGetNowTime(),
+		Language:   config.MyConfig.App.Language,
+		State:      rand.Intn(2),
+		Read:       easyutils.Random(300, 6000),
+		CreateTime: easyutils.TimeGetNowTime(),
 	}
 
 	dowdata := defs.ParserHoItem{}
@@ -95,19 +92,19 @@ func (p *ParserHomeIn) logic(url string,ch chan interface{}) {
 		//clog.Println(text)
 
 		// 名称
-		if strings.Index(text,"Nome do livro:") != -1 {
+		if strings.Index(text, "Book Name:") != -1 {
 			s := selection.Find("span").Text()
 			data.Name = strings.TrimSpace(s)
 		}
 
 		// 分类
-		if strings.Index(text,"Gênero:") != -1 {
+		if strings.Index(text, "Genre(s):") != -1 {
 			tex := ""
 			ic := 0
 			selection.Find("a").Each(func(i int, selection *goquery.Selection) {
 				if i == 0 {
 					tex = selection.Text()
-				}else {
+				} else {
 					tex += "," + selection.Text()
 				}
 				ic += 1
@@ -117,13 +114,13 @@ func (p *ParserHomeIn) logic(url string,ch chan interface{}) {
 		}
 
 		// 作者
-		if strings.Index(text,"Autor:") != -1 {
+		if strings.Index(text, "Author(s):") != -1 {
 			tex := ""
 			ic := 0
 			selection.Find("a").Each(func(i int, selection *goquery.Selection) {
 				if i == 0 {
 					tex = selection.Text()
-				}else {
+				} else {
 					tex += "  " + selection.Text()
 				}
 				ic += 1
@@ -133,13 +130,13 @@ func (p *ParserHomeIn) logic(url string,ch chan interface{}) {
 		}
 
 		//年代
-		if strings.Index(text,"Ano") != -1 {
+		if strings.Index(text, "Year") != -1 {
 			tex := ""
 			ic := 0
 			selection.Find("a").Each(func(i int, selection *goquery.Selection) {
 				if i == 0 {
 					tex = selection.Text()
-				}else {
+				} else {
 
 				}
 				ic += 1
@@ -151,7 +148,7 @@ func (p *ParserHomeIn) logic(url string,ch chan interface{}) {
 
 	// 描述
 	text := document.Find("p[itemprop='description']").Text()
-	text = strings.Replace(text, "\nSinopse: \n", "", -1)
+	text = strings.Replace(text, "\nSummary:\n", "", -1)
 	data.Describe = text
 
 	val, exists := document.Find("img[itemprop='image']").Attr("src")
@@ -176,17 +173,17 @@ func (p *ParserHomeIn) logic(url string,ch chan interface{}) {
 		}
 
 		item := defs.DowItem{
-			Url:url,
-			Num:num,
+			Url: url,
+			Num: num,
 		}
 
-		dowdata.DowUrl = append(dowdata.DowUrl,item)
+		dowdata.DowUrl = append(dowdata.DowUrl, item)
 	})
 
 	// 数据入库
 	//data.Language = url
 	if data.Name == "" {
-		ioutil.WriteFile("err.html",homehtml,00666)
+		ioutil.WriteFile("err.html", homehtml, 00666)
 		return
 	}
 	_, e = mysql_conn.MysqlEngine.InsertOne(&data)
@@ -204,12 +201,12 @@ func (p *ParserHomeIn) logic(url string,ch chan interface{}) {
 
 	dowdata.SqlId = dat.Id
 
-	for i,k := range dowdata.DowUrl {
-		if i < easyutils.Random(15,30) {
+	for i, k := range dowdata.DowUrl {
+		if i < easyutils.Random(15, 30) {
 			k.SqlId = dowdata.SqlId
 			// 写入
 			ch <- k
-		}else {
+		} else {
 			return
 		}
 	}

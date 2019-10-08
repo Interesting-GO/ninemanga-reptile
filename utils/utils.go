@@ -40,7 +40,7 @@ func Dow(url string) []byte {
 			clog.PrintEr("第" + strconv.Itoa(i) + " 下载超时 Url:" + url)
 			time.Sleep(20 * time.Second)
 			continue
-		}else if e!= nil && i > 10 {
+		} else if e != nil && i > 10 {
 			return nil
 		} else {
 			if response == nil {
@@ -74,7 +74,6 @@ func GetNum(str string) int {
 		}
 	}
 
-
 	return 0
 }
 
@@ -85,12 +84,12 @@ func GetPage(str string) int {
 	if e != nil {
 		clog.Println(i)
 		panic(e)
-	}else {
+	} else {
 		return i
 	}
 }
 
-func DowChrom(url string) []byte  {
+func DowChrom(url string) []byte {
 	// 下载网页
 	for i := 0; i < 100; i++ {
 		s, e := AnalysisHtml(url)
