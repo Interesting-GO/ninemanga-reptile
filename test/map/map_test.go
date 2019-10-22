@@ -66,16 +66,15 @@ func Unmarshal(jsn string) (*mapun, error) {
 	}, nil
 }
 
-func (m *mapun) getString(key string) (string,bool) {
-	s,ok := m.mc[key].(string)
-	return s,ok
+func (m *mapun) getString(key string) (string, bool) {
+	s, ok := m.mc[key].(string)
+	return s, ok
 }
 
-func (m *mapun) getMap (key string) (map[string]interface{}, bool) {
-	i,ok := m.mc[key].([]interface{})[0].(map[string]interface{})
-	return i,ok
+func (m *mapun) getMap(key string) (map[string]interface{}, bool) {
+	i, ok := m.mc[key].([]interface{})[0].(map[string]interface{})
+	return i, ok
 }
-
 
 func toMap(data interface{}) (map[string]interface{}, error) {
 	i, ok := data.([]interface{})[0].(map[string]interface{})

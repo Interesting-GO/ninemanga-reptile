@@ -11,6 +11,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/dollarkillerx/easyutils/clog"
 	"log"
+	"ninemanga-reptile/defs"
 	"ninemanga-reptile/utils"
 	"sync"
 )
@@ -67,12 +68,22 @@ func (p *ParserHome) logic(url string, ch chan interface{}) {
 	}
 
 	document.Find("dl.bookinfo").Each(func(i int, selection *goquery.Selection) {
+		text := selection.Find("dd").Find("span").Text()
+		var valc string
 		selection.Find("a.bookname").Each(func(i int, selection *goquery.Selection) {
 			val, exists := selection.Attr("href")
+
 			if exists {
 				log.Println(val)
-				ch <- val
+				valc = val
 			}
 		})
+
+		data := defs.Hc{
+			Url:  valc,
+			View: text,
+		}
+
+		ch <- data
 	})
 }

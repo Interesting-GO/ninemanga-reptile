@@ -16,8 +16,8 @@ type GenerateUrl struct {
 
 // url 生成器
 func (p *GenerateUrl) ParserUrl(url chan interface{}) {
-	baseUrl := "http://www.ninemanga.com/category/index_%v.html"
-	for i := 2; i <= 1315; i++ {
+	baseUrl := "http://es.ninemanga.com/category/index_%v.html"
+	for i := 2; i <= 100; i++ {
 		spr := fmt.Sprintf(baseUrl, i)
 		url <- spr
 	}

@@ -43,8 +43,7 @@ cc:
 						<-numch
 						sy.Done()
 					}()
-					url := ur.(string)
-					p.logic(url, ch2)
+					p.logic(ur, ch2)
 
 				}(ur)
 
@@ -58,7 +57,10 @@ cc:
 	}
 }
 
-func (p *ParserHomeIn) logic(url string, ch chan interface{}) {
+func (p *ParserHomeIn) logic(urlc interface{}, ch chan interface{}) {
+	datac := urlc.(defs.Hc)
+	url := datac.Url + "?waring=1"
+
 	//url := "http://fr.ninemanga.com/manga/The+Prince%27s+Private+Child.html"
 	var homehtml []byte
 
@@ -83,6 +85,7 @@ func (p *ParserHomeIn) logic(url string, ch chan interface{}) {
 		State:      rand.Intn(2),
 		Read:       easyutils.Random(300, 6000),
 		CreateTime: easyutils.TimeGetNowTime(),
+		Hot:        datac.View,
 	}
 
 	dowdata := defs.ParserHoItem{}

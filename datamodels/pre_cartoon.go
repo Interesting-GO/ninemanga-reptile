@@ -10,6 +10,7 @@ type PreCartoon struct {
 	Describe         string `xorm:"comment('描述') TEXT" form:"describe" binding:"required"`
 	ClassificationId int    `xorm:"not null default 0 comment('分类id') index INT(10)" form:"classification_id" binding:"required"`
 	Classification   string `xorm:"comment('分类 str') TEXT" form:"classification_id" binding:"required"`
+	Hot              string `xorm:"not null comment('hot') index VARCHAR(255)"`
 	Year             string `xorm:"not null comment('year') index VARCHAR(255)" form:"year"`
 	Read             int    `xorm:"not null default 0 comment('阅读量') INT(10)"`
 	CreateTime       int    `xorm:"not null default 0 comment('创建时间') INT(10)"`

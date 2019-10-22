@@ -32,3 +32,8 @@ type CartoonItemImgItem struct {
 	Id  int    `json:"id"`
 	Img string `json:"img"`
 }
+
+type Hc struct {
+	Url  string `json:"url"`
+	View string `json:"view"`
+}
