@@ -9,6 +9,7 @@ require (
 	github.com/dollarkillerx/easyutils v0.0.0-20190921085932-9ee23480ffa3
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/go-xorm/xorm v0.7.7
+	github.com/kr/pretty v0.3.0 // indirect
 	github.com/tebeka/selenium v0.9.9
-	gopkg.in/yaml.v2 v2.2.2
+	gopkg.in/yaml.v2 v2.2.8
 )
